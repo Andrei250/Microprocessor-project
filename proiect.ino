@@ -22,6 +22,10 @@ unsigned int offset = 0;
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 const String messages[3] = {"INAINTE", "STANGA", "DREAPTA"};
 bool hasChanged = true;
+unsigned const int valuePerSlide = 9;
+unsigned const int lower = 5;
+unsigned const int higher = 1000;
+unsigned const int lowestTick = 3000;
 
 byte arrows[3][8][8] = {{{0x18,0x3C,0x7E,0x18,0x18,0x18,0x18,0x00},
                       {0x3C,0x7E,0x18,0x18,0x18,0x18,0x00,0x18},
@@ -74,8 +78,6 @@ void setup() {
   TCCR1B = 0;
   TCNT1  = 0;
 
-//  OCR1A = 31249;            // compare match register 16MHz/256/2Hz-1
-//  OCR1A = 3500;
   OCR1A = 12000;
   TCCR1B |= (1 << WGM12);   // CTC mode
   TCCR1B |= (1 << CS12);    // 256 prescaler
@@ -117,16 +119,20 @@ void printMessage(String message) {
 }
 
 ISR(TIMER1_COMPA_vect) {
-//  Serial.println(directionToMove, DEC);
-
   // how quick to change the state
-//  OCR1A += 1000;
   offset += 1;
   offset %= 8;
   flickeringState = 1 - flickeringState;
   
   printMatrix();
   printByte(arrows[directionToMove][offset]);
+
+  int flickeringValue = analogRead(A1);
+
+  flickeringValue = max(lower, flickeringValue);
+  flickeringValue = min(flickeringValue, higher);
+
+  OCR1A = lowestTick + valuePerSlide * flickeringValue;
 }
 
 void readButtonInput() {
