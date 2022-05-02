@@ -6,9 +6,6 @@
 #define STATE_ON 1
 #define STATE_OFF 0
 
-unsigned const int LED_LEFT = 2;
-unsigned const int LED_RIGHT = 6;
-unsigned const int LED_FORWARD = 7;
 unsigned const int BUTTON_LEFT = 3;
 unsigned const int BUTTON_RIGHT = 4;
 unsigned const int BUTTON_FORWARD = 5;
@@ -61,10 +58,6 @@ void setup() {
   pinMode(BUTTON_RIGHT, INPUT_PULLUP);
   pinMode(BUTTON_FORWARD, INPUT_PULLUP);
 
-  pinMode(LED_LEFT, OUTPUT);
-  pinMode(LED_FORWARD, OUTPUT);
-  pinMode(LED_RIGHT, OUTPUT);
-
   lc.shutdown(0, false);
   lc.setIntensity(0, 15);
   lc.clearDisplay(0);
@@ -85,31 +78,10 @@ void setup() {
   sei();
 }
 
-void turnOffMatrix() {
-  digitalWrite(LED_LEFT, LOW);
-  digitalWrite(LED_RIGHT, LOW);
-  digitalWrite(LED_FORWARD, LOW);
-}
-
 void printByte(byte object[]) {
   for (int i = 0; i < 8; ++i) {
     lc.setRow(0, i, object[i]);
   }
-}
-
-void printMatrix() {
-  if (flickeringState == STATE_ON) {
-    if (directionToMove == LEFT) {
-      digitalWrite(LED_LEFT, HIGH);
-    } else if (directionToMove == RIGHT) {
-      digitalWrite(LED_RIGHT, HIGH);
-    } else if (directionToMove == FORWARD) {
-      digitalWrite(LED_FORWARD, HIGH);
-    }
-  } else {
-    turnOffMatrix();
-  }
-  
 }
 
 void printMessage(String message) {
@@ -122,9 +94,7 @@ ISR(TIMER1_COMPA_vect) {
   // how quick to change the state
   offset += 1;
   offset %= 8;
-  flickeringState = 1 - flickeringState;
-  
-  printMatrix();
+
   printByte(arrows[directionToMove][offset]);
 
   int flickeringValue = analogRead(A1);
@@ -145,15 +115,12 @@ void readButtonInput() {
   if (leftSignal == LOW) {
     directionToMove = LEFT;
     hasChanged = true;
-    turnOffMatrix();
   } else if (rightSignal == LOW) {
     directionToMove = RIGHT;
     hasChanged = true;
-    turnOffMatrix();
   } else if (forwardSignal == LOW) {
     directionToMove = FORWARD;
     hasChanged = true;
-    turnOffMatrix();
   }
 }
 
