@@ -112,13 +112,13 @@ void readButtonInput() {
   rightSignal = digitalRead(BUTTON_RIGHT);
   forwardSignal = digitalRead(BUTTON_FORWARD);
 
-  if (leftSignal == LOW) {
+  if (leftSignal == LOW && directionToMove != LEFT) {
     directionToMove = LEFT;
     hasChanged = true;
-  } else if (rightSignal == LOW) {
+  } else if (rightSignal == LOW && directionToMove != RIGHT) {
     directionToMove = RIGHT;
     hasChanged = true;
-  } else if (forwardSignal == LOW) {
+  } else if (forwardSignal == LOW && directionToMove != FORWARD) {
     directionToMove = FORWARD;
     hasChanged = true;
   }
