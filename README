@@ -1,0 +1,41 @@
+Dumitrescu Andrei 333CC
+
+Setup + initializari de variabile
+
+- am facut cateva initializari, cum ar fi setarea pinilor pentru butoane, LCD, matrice leduri, potentiometru.
+- initializarea mesajelor care urmau sa fie afisate pe LCD.
+- initializarea matricelor afisate pe matricea de leduri ( variabila arrows ).
+- initializarea LCD-ului si a LedControl-ului.
+- in setup am facut setez pinii si valorile initiale ale lcd-ului si a ledControl-ului.
+- setez variabilele pentru timer si prescaler.
+
+Functia printByte
+
+- Pentru un array de bytes, setez fiecare linie din matricea de leduri cu valoarea d ela pozitia respectiva.
+  Ex.: linie 0 are valoarea object[0], unde object este parametrul de tip byte[].
+
+Functia printMessage
+
+- primeste ca parametru un mesaj.
+- afiseaza mesajul pe lcd dupa ce se seteaza cursorul la 0, 0.
+
+Timerul
+
+- aici se afla logica jocului.
+- in variabila offset retin starea la care se afla sageata acum, pentru a putea genera animatia.
+- aceasta poate lua valori doar de la 0 la 7 ( inclusiv ), deoarece sunt 8 randuri de leduri.
+- afisez matricea cu functia printByte cu parametrul arrows[directionToMove][offset]. offset pentru starea curenta si directionToMove pentru directia de miscare a biciclistului.
+- iau valoarea potentiometrului pentru a regla viteza animatiei matricei.
+- am considerat valorile sa fie intre 5 si 1000.
+- pentru modificarea vitezei, schimb valoarea lui OCR1A.
+- acesta va lua valori intre 3000 si 10000 - 11000.
+
+Functia readButtonInput()
+
+- citeste valorile celor 3 butoane.
+- se face o verificare pentru a afla directia in care se va misca biciclistul.
+
+Functia loop()
+
+- se citeste valoarea butoanelor.
+- daca s-a schimbat optiunea de ultima data, atunci fac update la mesajul care se afiseaza pe lcd.
